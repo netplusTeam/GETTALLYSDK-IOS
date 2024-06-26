@@ -1,0 +1,23 @@
+PODS:
+  - TallyiOS (1.0.3):
+    - Valet (~> 4.3.0)
+  - Valet (4.3.0)
+
+DEPENDENCIES:
+  - TallyiOS (from `../`)
+
+SPEC REPOS:
+  trunk:
+    - Valet
+
+EXTERNAL SOURCES:
+  TallyiOS:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  TallyiOS: 744c44d6a97b43d598750b5e6f2d0f6643385cfa
+  Valet: 0eddc2f5876e7907a54b7763823eadb3fb3900cb
+
+PODFILE CHECKSUM: 25db908dbcf5a7af35f0c584a2911f8121b53e37
+
+COCOAPODS: 1.15.2

@@ -1,0 +1,6 @@
+framework module TallyiOS {
+  umbrella header "TallyiOS-umbrella.h"
+
+  export *
+  module * { export * }
+}

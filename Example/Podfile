@@ -1,0 +1,14 @@
+use_frameworks!
+
+platform :ios, '13.0'
+
+target 'TallyiOS_Example' do
+  pod 'TallyiOS', :path => '../'
+ # pod 'Valet', '~> 4.3.0'
+
+  target 'TallyiOS_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end
