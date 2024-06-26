@@ -210,7 +210,7 @@ Then call the TallyiOS SDK
                 result(FlutterError(code: "INVALID_ARGUMENTS", message: "Enter activationKey", details: nil))
                 return
             }
-            let param = TallyParam(userId: "userId", userFullName: "userFullName", userEmail: "userEmail@gmail.com", userPhone: "userPhone", bankName: "bankName", staging: true, apiKey: "apiKey", activationKey: "activationKey")
+            let param = TallyParam(userId: userId, userFullName: fullName, userEmail: email, userPhone: phoneNumber, bankName: bankName, staging: true, apiKey: apiKey, activationKey: activationKey)
             guard let controller = UIApplication.shared.windows.first?.rootViewController else{
                 return
             }
