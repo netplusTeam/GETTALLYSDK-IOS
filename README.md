@@ -521,21 +521,7 @@ class SavedTallyData {
 
 
 ````
-If you ave used the flutter channel method, you can fetch the QR code using the dart code below.
-```Dart
-import 'package:flutter/services.dart';
 
-// Create an instance of the MethodChannel
-final MethodChannel platformChannel = MethodChannel('"com.fundall.gettallysdkui"');
-void fetchQRCodesFromTally() async {
-  try {
-    final Map<String, dynamic> result = await platformChannel.invokeMethod('fetchMethod');
-    print('Result from Native: $result');
-  } on PlatformException catch (e) {
-    print('Error: ${e.message}');
-  }
-}
-```
 ### Conclusion
 Integrating Tally SDK into your app not only enhances its financial capabilities but does so with an emphasis on security and ease of use. By following the steps outlined above, developers and business stakeholders alike can ensure a smooth implementation process, bringing sophisticated financial transaction features to your users with minimal hassle. Whether you’re enhancing an existing application or building a new one, Tally SDK provides the tools you need to succeed.
 
