@@ -150,20 +150,8 @@ Then call the TallyiOS SDK
             }
 
             ///If you prefer event listener you can also retrieve QR codes using event listeners
-            //// Uncomment the code below to use eventChannel
-         /*   let eventChannel = FlutterEventChannel(name: "com.netplus.qrengine.tallysdk/tokenizedCardsData", binaryMessenger: flutterViewController.binaryMessenger)
-                     eventChannel.setStreamHandler(object : StreamHandler {
-                      override func onListen(arguments: Any?, eventSink: EventSink) {
-                       let data = self.getDataFromTally()
-                        eventSink(data)
-                     }
-
-                    override func onCancel(arguments: Any?) {
-                       eventSink = nil
-                     }
-                   })
-
-            */
+            //// Use the code below to use eventChannel
+         
             let eventChannel = FlutterEventChannel(name: "com.netplus.qrengine.tallysdk/tokenizedCardsData", binaryMessenger: flutterViewController.binaryMessenger)
             eventChannel.setStreamHandler(self)
         }
