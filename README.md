@@ -334,14 +334,17 @@ class _SDKTriggerButtonState extends State<SDKTriggerButton> {
 
   List<SavedTallyData> savedData = [];
 
+//Toggle this for MethodChannel/EventChannel
   bool useMethod = true;
 
   @override
   void initState() {
 
     if (useMethod){
+// How to use MethodChannel
       _fetchQRCodesFromTally();
     }else{
+// How to use EventChannel
       _tokenizedCardsDataStream.listen((result) {
 
         if (result != null) {
