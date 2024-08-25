@@ -113,9 +113,9 @@ Then call the TallyiOS SDK
 
 
 
-@UIApplicationMain
-@objc class AppDelegate: FlutterAppDelegate {
-    
+@main
+@objc class AppDelegate: FlutterAppDelegate, FlutterStreamHandler {
+
     // Define the channel identifier
     private let CHANNEL = "com.fundall.gettallysdkui"
     // Define the methods identifier
@@ -123,11 +123,13 @@ Then call the TallyiOS SDK
     private let fetchMethod = "fetchMethod"
     private let startTallyActivity = "startTallyActivity"
     
+    // Declare our eventSink, it will be initialized later
+    private var eventSink: FlutterEventSink?
+
     override func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
     ) -> Bool {
-        GeneratedPluginRegistrant.register(with: self)
         // Set up the MethodChannel with the same name as defined in Dart
         if let flutterViewController = window?.rootViewController as? FlutterViewController {
             let methodChannel = FlutterMethodChannel(name: CHANNEL, binaryMessenger: flutterViewController.binaryMessenger)
@@ -135,7 +137,7 @@ Then call the TallyiOS SDK
                 if call.method == self?.fetchMethod {
                     // Perform platform-specific operations and obtain the result
                     let data = self?.getDataFromTally()
-                    
+
                     // Send the result back to Flutter
                     result(data)
                 } else if call.method == self?.deleteMethod {
@@ -146,7 +148,7 @@ Then call the TallyiOS SDK
                     result(FlutterMethodNotImplemented)
                 }
             }
-            
+
             ///If you prefer event listener you can also retrieve QR codes using event listeners
             //// Uncomment the code below to use eventChannel
          /*   let eventChannel = FlutterEventChannel(name: "com.netplus.qrengine.tallysdk/tokenizedCardsData", binaryMessenger: flutterViewController.binaryMessenger)
@@ -160,18 +162,38 @@ Then call the TallyiOS SDK
                        eventSink = nil
                      }
                    })
-            
+
             */
-            
+            let eventChannel = FlutterEventChannel(name: "com.netplus.qrengine.tallysdk/tokenizedCardsData", binaryMessenger: flutterViewController.binaryMessenger)
+            eventChannel.setStreamHandler(self)
         }
         
+        GeneratedPluginRegistrant.register(with: self)
+
         return super.application(application, didFinishLaunchingWithOptions: launchOptions)
     }
-    
-    func getDataFromTally() -> EncryptedQrModelData? {
+
+   /* func getDataFromTally() -> EncryptedQrModelData? {
         return TallDataUtil.shared.retrieveData()
-    }
+    }*/
     
+    private  func getDataFromTally() -> [String: Any]? {
+        
+        
+        let savedData = TallDataUtil.shared.retrieveData()
+      guard let savedData else {
+        return nil
+      }
+       let encoder = JSONEncoder()
+    do {
+      let data = try encoder.encode(savedData)
+     let formattedResponse = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+      return formattedResponse
+      }catch {
+        return nil
+      }
+    }
+
     func deleteDataFromTally(result:  FlutterResult) {
         do {
             try TallDataUtil.shared.deleteAllData()
@@ -220,26 +242,43 @@ Then call the TallyiOS SDK
         }
     }
     
+    func onListen(withArguments arguments: Any?, eventSink: @escaping FlutterEventSink) -> FlutterError? {
+        print("onListen......")
+        self.eventSink = eventSink
+        let dataFetched = getDataFromTally()
+        eventSink(dataFetched)
+        
+    
+        return nil
+    }
+    
+    func onCancel(withArguments arguments: Any?) -> FlutterError? {
+        eventSink = nil
+        return nil
+    }
+    
+
 }
+
 ```
 You can convert the response `getDataFromTally` to a JSON/Map<String, dynamic> for uniformity on both Android and iOS
 To convert it to Map<String, dynamic> use the code below instead
 
 ```swift
-private func getDataFromTally() -> [String: Any]? {
- let savedData = TallDataUtil.shared.retrieveData()
-  guard let savedData else {
-    return nil
-  }
-   let encoder = JSONEncoder()
-do {
-  let data = try encoder.encode(savedData)
- let formattedResponse = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
-  return formattedResponse
-  }catch {
-    return nil
-  }
-}
+private  func getDataFromTally() -> [String: Any]? {
+let savedData = TallDataUtil.shared.retrieveData()
+      guard let savedData else {
+        return nil
+      }
+       let encoder = JSONEncoder()
+    do {
+      let data = try encoder.encode(savedData)
+     let formattedResponse = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any]
+      return formattedResponse
+      }catch {
+        return nil
+      }
+    }
 ```
     
 Below is the structure of response to be expected in JSON form
